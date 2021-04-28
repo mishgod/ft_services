@@ -1,12 +1,13 @@
 FROM alpine:3.12
 
+#install packages
 RUN apk update
 RUN apk upgrade
 RUN apk add nginx \
             openssl \
             supervisor
 
-#nginx
+#copy configs
 COPY ./nginx.conf /etc/nginx/conf.d/nginx.conf
 COPY ./supervisord.conf /etc/supervisord.conf
 
@@ -17,7 +18,6 @@ RUN openssl req -newkey rsa:2048 -nodes -x509 -sha256 -days 365 -out /etc/nginx/
     -subj '/C=RU/ST=Tatarstan/L=Kazan/O=School21 Kazan/OU=rbooker/emailAddress=rbooker@student.21-school.ru'
 
 WORKDIR /
-
 COPY ./start.sh /tmp/start.sh
 RUN chmod +x /tmp/start.sh
 RUN mkdir -p /run/nginx

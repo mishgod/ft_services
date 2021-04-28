@@ -1,5 +1,5 @@
 FROM alpine:3.12
-
+#install packages
 RUN apk update
 RUN apk upgrade
 RUN apk add wget \
@@ -27,7 +27,7 @@ RUN apk add wget \
             php7-ctype \
             php7-dom \
             supervisor
-
+#download wordpress
 WORKDIR /var/www
 RUN wget https://wordpress.org/latest.tar.gz
 RUN tar -xzvf latest.tar.gz && rm -rf latest.tar.gz
@@ -36,13 +36,13 @@ RUN ln -s /var/www/wordpress/ /var/www/localhost/htdocs/wordpress
 COPY wp-config.php ./wordpress/
 RUN chown -R 755 /var/www/
 
+#copy configs
 WORKDIR /
 COPY nginx.conf /etc/nginx/conf.d/
 RUN rm -rf /etc/nginx/conf.d/default.conf
 COPY supervisord.conf /etc/
 
 RUN mkdir -p /run/nginx
-#RUN mkdir -p /run/wordpress
 RUN chmod -R 777 /var/lib/nginx
 
 EXPOSE 5050

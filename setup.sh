@@ -1,5 +1,5 @@
 #!/bin/bash
-#ln -s /goinfre/rbooker .minikube
+
 echo "minikube is starting"
 minikube start --vm-driver=virtualbox --cpus 2 --memory 3000
 echo "minikube started"
@@ -22,4 +22,4 @@ docker build -t influxdb_image src/influxdb
 kubectl apply -f src/influxdb/influxdb.yaml
 docker build -t grafana_image src/grafana
 kubectl apply -f src/grafana/grafana.yaml
-minikube dashboard
+#minikube dashboard

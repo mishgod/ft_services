@@ -1,5 +1,5 @@
 FROM alpine:3.7
-
+#install packages
 RUN apk update
 RUN apk upgrade
 RUN apk add vsftpd \
@@ -7,13 +7,14 @@ RUN apk add vsftpd \
             openrc \
             supervisor
 
+#copy configs
 COPY supervisord.conf /etc/
 COPY vsftpd.conf /etc/vsftpd/
 
-#user creating with pass
+#create user with pass
 RUN echo "root:pass" | chpasswd
 
-#creating ssl certificate
+#create ssl certificate
 WORKDIR /etc/nginx/ssl
 RUN openssl req -newkey rsa:2048 -nodes -x509 -sha256 -days 365 -out /etc/nginx/ssl/private.crt \
     -keyout /etc/nginx/ssl/public.key \
@@ -22,8 +23,6 @@ RUN openssl req -newkey rsa:2048 -nodes -x509 -sha256 -days 365 -out /etc/nginx/
 WORKDIR /
 COPY start.sh /tmp/
 RUN chmod +x /tmp/start.sh
-#RUN chmod -R 755 /etc/nginx/ssl/private.crt
-
 
 EXPOSE 20 21 10090
 

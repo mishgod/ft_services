@@ -1,5 +1,5 @@
 FROM alpine:3.12
-
+#install packages
 RUN apk update
 RUN apk upgrade
 RUN apk add wget \
@@ -35,19 +35,20 @@ RUN apk add wget \
             php7-session \
             supervisor
 
+#download PhpMyAdmin
 WORKDIR /var/www
 RUN wget https://files.phpmyadmin.net/phpMyAdmin/5.1.0/phpMyAdmin-5.1.0-all-languages.tar.gz
 RUN tar -xzvf phpMyAdmin-5.1.0-all-languages.tar.gz && rm -rf phpMyAdmin-5.1.0-all-languages.tar.gz
 RUN mv phpMyAdmin-5.1.0-all-languages phpmyadmin
 RUN ln -s /var/www/phpmyadmin /var/www/localhost/htdocs/phpmyadmin
 COPY ./config.inc.php ./phpmyadmin/
-
 RUN chown -R 755 /var/www/
-
+#copy configs
 WORKDIR /
-COPY ./nginx_pma.conf /etc/nginx/conf.d/nginx.conf
+COPY ./nginx.conf /etc/nginx/conf.d/nginx.conf
 RUN rm -rf /etc/nginx/conf.d/default.conf
 COPY ./supervisord.conf /etc/supervisord.conf
+
 COPY ./start.sh /tmp/start.sh
 RUN chmod +x /tmp/start.sh
 RUN mkdir -p /run/nginx
